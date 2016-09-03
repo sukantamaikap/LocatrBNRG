@@ -1,5 +1,6 @@
 package com.bignerdranch.android.locatrbnrg;
 
+import android.location.Location;
 import android.net.Uri;
 import android.util.Log;
 
@@ -83,6 +84,11 @@ public class FlickrFetcher {
         return downloadGalleryItem(url);
     }
 
+    public List<GalleryItem> searchPhoto(final Location location) {
+        final String url = this.buildUrl(location);
+        return this.downloadGalleryItem(url);
+    }
+
     private List<GalleryItem> downloadGalleryItem(final String url) {
         final List<GalleryItem> items = new ArrayList<>();
         try {
@@ -120,5 +126,15 @@ public class FlickrFetcher {
             uriBuilder.appendQueryParameter("page", pageNumber);
         }
         return uriBuilder.build().toString();
+    }
+
+    private String buildUrl(final Location location) {
+        return END_POINT
+                .buildUpon()
+                .appendQueryParameter("method", SEARCH_METHOD)
+                .appendQueryParameter("lat", String.valueOf(location.getLatitude()))
+                .appendQueryParameter("lon", String.valueOf(location.getLongitude()))
+                .build()
+                .toString();
     }
 }
